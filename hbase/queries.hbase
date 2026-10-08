@@ -1,0 +1,69 @@
+# ==============================================================================
+# Bank Transaction System Using Apache HBase with Docker
+# Script: queries.hbase
+# Description: Demonstrates HBase Shell queries including:
+#              - GET by specific row key
+#              - SCAN with LIMIT
+#              - PrefixFilter for querying all transactions of a customer
+#              - Column family and column qualifiers selection
+#              - SingleColumnValueFilter for filtering by transaction type / status
+#              - Row key range scan (startRow, stopRow)
+#              - COUNT operation
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Basic Table Listing & Verification
+# ------------------------------------------------------------------------------
+list
+describe 'bank_transactions'
+
+# ------------------------------------------------------------------------------
+# 2. GET Queries (Point Lookups by Row Key - O(1))
+# ------------------------------------------------------------------------------
+# Retrieve entire row
+get 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001'
+
+# Retrieve specific column family only
+get 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', {COLUMN => 'transaction'}
+
+# Retrieve specific column qualifiers
+get 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', {COLUMNS => ['transaction:amount', 'account:balance_after_transaction']}
+
+# ------------------------------------------------------------------------------
+# 3. SCAN Queries with Limits and Column Selection
+# ------------------------------------------------------------------------------
+# Scan first 5 records in table
+scan 'bank_transactions', {LIMIT => 5}
+
+# Scan with selected column families
+scan 'bank_transactions', {COLUMNS => ['customer:customer_name', 'transaction:amount', 'transaction:transaction_type'], LIMIT => 10}
+
+# ------------------------------------------------------------------------------
+# 4. Range Scans using Row Key design (Customer Transaction History)
+# ------------------------------------------------------------------------------
+# Fetch all transactions of customer CUST1001
+scan 'bank_transactions', {STARTROW => 'CUST1001#', STOPROW => 'CUST1001~'}
+
+# Fetch transactions of customer CUST1001 within a specific date window (e.g. Jan 2025)
+scan 'bank_transactions', {STARTROW => 'CUST1001#2025-01-01', STOPROW => 'CUST1001#2025-01-31~'}
+
+# ------------------------------------------------------------------------------
+# 5. Advanced Filter Queries
+# ------------------------------------------------------------------------------
+# PrefixFilter: Search all transactions for a specific customer prefix
+scan 'bank_transactions', {FILTER => "PrefixFilter('CUST1001')"}
+
+# SingleColumnValueFilter: Find all transactions of type 'Transfer'
+scan 'bank_transactions', {FILTER => "SingleColumnValueFilter('transaction', 'transaction_type', =, 'binary:Transfer')", LIMIT => 10}
+
+# SingleColumnValueFilter: Find all FAILED transactions
+scan 'bank_transactions', {FILTER => "SingleColumnValueFilter('transaction', 'transaction_status', =, 'binary:FAILED')", LIMIT => 10}
+
+# SingleColumnValueFilter: Filter by City 'Mumbai'
+scan 'bank_transactions', {FILTER => "SingleColumnValueFilter('location', 'city', =, 'binary:Mumbai')", LIMIT => 10}
+
+# ------------------------------------------------------------------------------
+# 6. Aggregation / Counting Records
+# ------------------------------------------------------------------------------
+count 'bank_transactions', INTERVAL => 1000
+count 'customer_accounts'

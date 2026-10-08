@@ -1,0 +1,81 @@
+# ==============================================================================
+# Bank Transaction System Using Apache HBase with Docker
+# Script: create_tables.hbase
+# Description: HBase Shell script to create banking domain tables with
+#              optimized column families and compression/versions configuration.
+# ==============================================================================
+
+# Disable and drop existing tables if recreating
+# (Commented out by default; uncomment if reset is desired)
+# disable 'bank_transactions'
+# drop 'bank_transactions'
+# disable 'customer_accounts'
+# drop 'customer_accounts'
+# disable 'transaction_summary'
+# drop 'transaction_summary'
+
+# ------------------------------------------------------------------------------
+# 1. Main Bank Transactions Table
+# ------------------------------------------------------------------------------
+# Row Key Design:
+# <customer_id>#<transaction_date>#<transaction_id>
+# Example: CUST1000#2025-01-05#TXN10005782
+#
+# Rationale:
+# - All transactions of a customer are clustered together on disk (data locality).
+# - Lexicographically ordered by transaction_date enables ultra-fast historical range scans.
+# - Appending unique transaction_id ensures uniqueness and prevents collisions.
+# - Eliminates hot-spotting compared to raw timestamp-only prefixes.
+#
+# Column Families:
+# - customer: customer_id, customer_name, account_type
+# - transaction: transaction_id, transaction_type, amount, transaction_date, transaction_time, transaction_status, description
+# - account: account_id, balance_after_transaction, sender_account, receiver_account
+# - location: branch, city
+# - payment: payment_method
+# ------------------------------------------------------------------------------
+
+create 'bank_transactions', \
+  {NAME => 'customer', VERSIONS => 1}, \
+  {NAME => 'transaction', VERSIONS => 1}, \
+  {NAME => 'account', VERSIONS => 1}, \
+  {NAME => 'location', VERSIONS => 1}, \
+  {NAME => 'payment', VERSIONS => 1}
+
+# ------------------------------------------------------------------------------
+# 2. Customer Accounts Table
+# ------------------------------------------------------------------------------
+# Row Key Design:
+# <customer_id>#<account_id>
+# Example: CUST1000#ACC90001000
+#
+# Column Families:
+# - personal: customer_name, account_type
+# - location: branch, city
+# - balance: current_balance, last_transaction_date, status
+# ------------------------------------------------------------------------------
+
+create 'customer_accounts', \
+  {NAME => 'personal', VERSIONS => 3}, \
+  {NAME => 'location', VERSIONS => 1}, \
+  {NAME => 'balance', VERSIONS => 5}
+
+# ------------------------------------------------------------------------------
+# 3. Transaction Summary Table
+# ------------------------------------------------------------------------------
+# Row Key Design:
+# <summary_level>#<date_or_dimension>
+# Example: DAILY#2025-01-05
+#
+# Column Families:
+# - stats: total_transactions, total_volume, success_count, failed_count, pending_count, deposit_volume, withdrawal_volume, transfer_volume
+# ------------------------------------------------------------------------------
+
+create 'transaction_summary', \
+  {NAME => 'stats', VERSIONS => 1}
+
+# Verify table creation
+list
+describe 'bank_transactions'
+describe 'customer_accounts'
+describe 'transaction_summary'

@@ -1,0 +1,35 @@
+# ==============================================================================
+# Bank Transaction System Using Apache HBase with Docker
+# Script: delete_tables.hbase
+# Description: Demonstrates deletion operations in HBase:
+#              - Deleting a specific cell / column qualifier
+#              - Deleting an entire row (deleteall)
+#              - Truncating a table (retains schema, purges data)
+#              - Disabling and dropping tables safely
+# ==============================================================================
+
+# 1. Delete a specific column qualifier from a row
+# delete '<table_name>', '<row_key>', '<family:column>'
+delete 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:description'
+
+# 2. Delete an entire row
+# deleteall '<table_name>', '<row_key>'
+deleteall 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002'
+deleteall 'customer_accounts', 'CUST1001#ACC90001001'
+
+# 3. Truncate table (clears all data while keeping table definitions)
+# truncate 'transaction_summary'
+
+# 4. Safely Disable and Drop tables
+# Note: HBase requires a table to be DISABLED before it can be DROPPED
+disable 'transaction_summary'
+drop 'transaction_summary'
+
+disable 'customer_accounts'
+drop 'customer_accounts'
+
+disable 'bank_transactions'
+drop 'bank_transactions'
+
+# Verify removal
+list

@@ -1,0 +1,321 @@
+{
+  "generated_at": "2026-10-08 09:44:11",
+  "total_transactions": 10505,
+  "total_volume": 631425036.56,
+  "average_amount": 60107.1,
+  "highest_amount": 1187745.97,
+  "lowest_amount": 0.0,
+  "status_distribution": {
+    "SUCCESS": 6523,
+    "REVERSED": 1158,
+    "PENDING": 1165,
+    "FAILED": 1638,
+    "Unknown": 21
+  },
+  "type_distribution": {
+    "Transfer": 1810,
+    "UPI": 1731,
+    "ATM": 1775,
+    "Payment": 1760,
+    "Deposit": 1654,
+    "Withdrawal": 1712,
+    "Unknown": 63
+  },
+  "type_volume": {
+    "Transfer": 390892607.06,
+    "UPI": 12925751.42,
+    "ATM": 12769000.0,
+    "Payment": 39107677.44,
+    "Deposit": 126889956.55,
+    "Withdrawal": 43385181.1,
+    "Unknown": 5454862.99
+  },
+  "payment_method_distribution": {
+    "NEFT": 1314,
+    "UPI": 2988,
+    "Debit Card": 1841,
+    "Credit Card": 419,
+    "RTGS": 565,
+    "ATM": 1497,
+    "IMPS": 838,
+    "Cash": 959,
+    "Unknown": 84
+  },
+  "payment_method_volume": {
+    "NEFT": 63949093.72,
+    "UPI": 73995842.4,
+    "Debit Card": 30107320.78,
+    "Credit Card": 9281548.96,
+    "RTGS": 331855404.14,
+    "ATM": 21539038.2,
+    "IMPS": 53702653.19,
+    "Cash": 45804318.79,
+    "Unknown": 1189816.38
+  },
+  "city_distribution": {
+    "Mumbai": 2280,
+    "Delhi": 1212,
+    "Chennai": 1278,
+    "Unknown": 105,
+    "Bengaluru": 1277,
+    "Pune": 593,
+    "Kolkata": 1312,
+    "Hyderabad": 419,
+    "Kochi": 202,
+    "Ahmedabad": 397,
+    "Chandigarh": 183,
+    "Jaipur": 398,
+    "Lucknow": 221,
+    "Patna": 209,
+    "Shimla": 217,
+    "Nagpur": 202
+  },
+  "branch_distribution": {
+    "Nariman Point": 197,
+    "Bandra Kurla Complex": 202,
+    "Connaught Place": 199,
+    "Anna Nagar": 218,
+    "Unknown": 126,
+    "Whitefield": 231,
+    "Shivaji Nagar": 194,
+    "Salt Lake": 202,
+    "Hitec City": 203,
+    "MG Road": 202,
+    "SG Highway": 187,
+    "Andheri East": 209,
+    "Indiranagar": 207,
+    "Banjara Hills": 215,
+    "Kothrud": 192,
+    "Park Street": 201,
+    "Saket": 187,
+    "Sector 17": 183,
+    "T Nagar": 213,
+    "MI Road": 205,
+    "Hazratganj": 218,
+    "New Town": 219,
+    "Powai": 224,
+    "Koramangala": 215,
+    "Velachery": 198,
+    "Dwarka": 217,
+    "Hauz Khas": 217,
+    "Juhu": 214,
+    "Rajouri Garden": 199,
+    "Electronic City": 219,
+    "Viman Nagar": 207,
+    "Vastrapur": 210,
+    "Howrah": 230,
+    "C-Scheme": 193,
+    "Boring Road": 206,
+    "Hebbal": 212,
+    "Bandra West": 210,
+    "Mall Road": 217,
+    "Chanakyapuri": 191,
+    "Adyar": 202,
+    "Civil Lines": 201,
+    "Worli": 208,
+    "Bandra": 414,
+    "Colaba": 200,
+    "Ballygunge": 222,
+    "Mylapore": 224,
+    "Jayanagar": 189,
+    "Behala": 235,
+    "Egmore": 222,
+    "Sangli": 199
+  },
+  "total_deposits": 126889956.55,
+  "total_withdrawals": 56154181.1,
+  "total_transfers": 390892607.06,
+  "top_customers_by_volume": [
+    [
+      "Unknown (Unknown)",
+      147
+    ],
+    [
+      "CUST1031 (Abhishek Banerjee)",
+      54
+    ],
+    [
+      "CUST1047 (Sourav Ganguly)",
+      53
+    ],
+    [
+      "CUST1172 (Nikhil Bhat)",
+      49
+    ],
+    [
+      "CUST1247 (Sourav Ganguly)",
+      47
+    ],
+    [
+      "CUST1076 (Shreya Ghoshal)",
+      46
+    ],
+    [
+      "CUST1204 (Vikram Singh)",
+      46
+    ],
+    [
+      "CUST1243 (Pranab Mukherjee)",
+      46
+    ],
+    [
+      "CUST1261 (Divya Menon)",
+      46
+    ],
+    [
+      "CUST1251 (Priya Patel)",
+      45
+    ]
+  ],
+  "top_customers_by_amount": [
+    [
+      "CUST1098 (Sanath Jayasuriya)",
+      7725812.33
+    ],
+    [
+      "CUST1112 (Kavita Rao)",
+      5459323.03
+    ],
+    [
+      "CUST1292 (Tara Sutaria)",
+      4837630.93
+    ],
+    [
+      "CUST1076 (Shreya Ghoshal)",
+      4751726.54
+    ],
+    [
+      "CUST1013 (Aditya Deshmukh)",
+      4389243.86
+    ],
+    [
+      "CUST1194 (Zoya Akhtar)",
+      4330386.62
+    ],
+    [
+      "CUST1026 (Shreya Ghoshal)",
+      4135240.39
+    ],
+    [
+      "CUST1178 (Rhea Pillai)",
+      4095626.54
+    ],
+    [
+      "CUST1097 (Sourav Ganguly)",
+      4007700.58
+    ],
+    [
+      "CUST1204 (Vikram Singh)",
+      3903631.39
+    ]
+  ],
+  "most_active_accounts": [
+    [
+      "Unknown",
+      273
+    ],
+    [
+      "ACC90001031",
+      53
+    ],
+    [
+      "ACC90001047",
+      52
+    ],
+    [
+      "ACC90001172",
+      49
+    ],
+    [
+      "ACC90001243",
+      46
+    ],
+    [
+      "ACC90001247",
+      46
+    ],
+    [
+      "ACC90001076",
+      45
+    ],
+    [
+      "ACC90001204",
+      45
+    ],
+    [
+      "ACC90001261",
+      45
+    ],
+    [
+      "ACC90001274",
+      45
+    ]
+  ],
+  "suspicious_transactions_count": 572,
+  "monthly_summary": {
+    "1970-01": {
+      "count": 21,
+      "volume": 0.0
+    },
+    "2025-01": {
+      "count": 743,
+      "volume": 42753533.38
+    },
+    "2025-02": {
+      "count": 675,
+      "volume": 39090436.09
+    },
+    "2025-03": {
+      "count": 693,
+      "volume": 45185730.42
+    },
+    "2025-04": {
+      "count": 677,
+      "volume": 40487149.83
+    },
+    "2025-05": {
+      "count": 666,
+      "volume": 37193198.59
+    },
+    "2025-06": {
+      "count": 670,
+      "volume": 42315328.54
+    },
+    "2025-07": {
+      "count": 744,
+      "volume": 41137353.61
+    },
+    "2025-08": {
+      "count": 663,
+      "volume": 37591444.07
+    },
+    "2025-09": {
+      "count": 712,
+      "volume": 38646656.1
+    },
+    "2025-10": {
+      "count": 701,
+      "volume": 45649265.57
+    },
+    "2025-11": {
+      "count": 731,
+      "volume": 49585999.41
+    },
+    "2025-12": {
+      "count": 759,
+      "volume": 44208636.22
+    },
+    "2026-01": {
+      "count": 714,
+      "volume": 45486309.04
+    },
+    "2026-02": {
+      "count": 632,
+      "volume": 37400768.42
+    },
+    "2026-03": {
+      "count": 704,
+      "volume": 44693227.27
+    }
+  }
+}

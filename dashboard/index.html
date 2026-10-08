@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusBank | HBase Big Data Transaction Analytics</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-building-columns"></i>
+      </div>
+      <div class="brand-text">
+        <h1>Nexus<span>Bank</span></h1>
+        <p class="subtitle">Apache HBase Big Data Architecture</p>
+      </div>
+    </div>
+
+    <!-- Cluster Status Indicators -->
+    <div class="cluster-status-bar">
+      <div class="status-chip" id="chip-hbase">
+        <span class="status-dot pulse-green"></span>
+        <span class="status-label">HBase 2.1: <strong>Connected</strong></span>
+      </div>
+      <div class="status-chip" id="chip-docker">
+        <span class="status-dot pulse-blue"></span>
+        <span class="status-label">Docker Desktop: <strong>Active</strong></span>
+      </div>
+      <button class="btn btn-primary" id="btn-new-txn" onclick="openModal('modal-create-txn')">
+        <i class="fa-solid fa-plus"></i> New Transaction
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="dashboard-container">
+
+    <!-- KPI Metrics Grid (8 Cards) -->
+    <section class="kpi-grid">
+      <!-- Total Transactions -->
+      <div class="kpi-card" data-tilt>
+        <div class="kpi-icon icon-blue"><i class="fa-solid fa-receipt"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Total Transactions</span>
+          <h2 class="kpi-val" id="metric-total-txns">--</h2>
+          <span class="kpi-sub"><i class="fa-solid fa-database"></i> Stored in HBase Table</span>
+        </div>
+      </div>
+
+      <!-- Financial Volume -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-emerald"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Total Volume</span>
+          <h2 class="kpi-val" id="metric-total-volume">--</h2>
+          <span class="kpi-sub text-success"><i class="fa-solid fa-chart-line"></i> Cumulative Processed</span>
+        </div>
+      </div>
+
+      <!-- Total Deposits -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-cyan"><i class="fa-solid fa-arrow-down-left"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Total Deposits</span>
+          <h2 class="kpi-val" id="metric-total-deposits">--</h2>
+          <span class="kpi-sub text-cyan"><i class="fa-solid fa-wallet"></i> Capital Inflow</span>
+        </div>
+      </div>
+
+      <!-- Total Withdrawals -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-amber"><i class="fa-solid fa-arrow-up-right"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Total Withdrawals</span>
+          <h2 class="kpi-val" id="metric-total-withdrawals">--</h2>
+          <span class="kpi-sub text-amber"><i class="fa-solid fa-money-bill-wave"></i> ATM / Cash Outflows</span>
+        </div>
+      </div>
+
+      <!-- Successful Transactions -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-emerald-glow"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Successful</span>
+          <h2 class="kpi-val text-success" id="metric-success-txns">--</h2>
+          <span class="kpi-sub text-success" id="metric-success-rate">98.5% Rate</span>
+        </div>
+      </div>
+
+      <!-- Failed Transactions -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-rose"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Failed Orders</span>
+          <h2 class="kpi-val text-rose" id="metric-failed-txns">--</h2>
+          <span class="kpi-sub text-rose"><i class="fa-solid fa-triangle-exclamation"></i> Rejections / NSF</span>
+        </div>
+      </div>
+
+      <!-- Pending Transactions -->
+      <div class="kpi-card">
+        <div class="kpi-icon icon-amber-glow"><i class="fa-solid fa-clock"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Pending Settlement</span>
+          <h2 class="kpi-val text-amber" id="metric-pending-txns">--</h2>
+          <span class="kpi-sub text-amber"><i class="fa-solid fa-arrows-rotate fa-spin"></i> In Clearing</span>
+        </div>
+      </div>
+
+      <!-- Suspicious Transactions -->
+      <div class="kpi-card card-alert">
+        <div class="kpi-icon icon-crimson"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="kpi-info">
+          <span class="kpi-title">Flagged Anomalies</span>
+          <h2 class="kpi-val text-crimson" id="metric-suspicious-txns">--</h2>
+          <span class="kpi-sub text-crimson"><i class="fa-solid fa-bell"></i> Rule-Based Flags</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="dashboard-tabs">
+      <button class="tab-btn active" onclick="switchTab('analytics-view')">
+        <i class="fa-solid fa-chart-pie"></i> Visual Analytics
+      </button>
+      <button class="tab-btn" onclick="switchTab('explorer-view')">
+        <i class="fa-solid fa-table-list"></i> HBase Table Explorer & Search
+      </button>
+      <button class="tab-btn" onclick="switchTab('fraud-view')">
+        <i class="fa-solid fa-user-secret"></i> Suspicious Transaction Radar
+      </button>
+      <button class="tab-btn" onclick="switchTab('architecture-view')">
+        <i class="fa-solid fa-server"></i> HBase Architecture & Schema
+      </button>
+    </nav>
+
+    <!-- TAB 1: VISUAL ANALYTICS -->
+    <section id="analytics-view" class="tab-content active">
+      <div class="charts-grid">
+        <!-- Chart 1: Monthly Volume Trend -->
+        <div class="chart-card card-wide">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-arrow-trend-up"></i> Monthly Financial Volume Trend (₹)</h3>
+            <span class="badge badge-primary">Time Series</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-monthly-volume"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Transaction Type Distribution -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-pie-chart"></i> Transaction Type Breakdown</h3>
+            <span class="badge badge-purple">Categories</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-types"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Payment Method Distribution -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-credit-card"></i> Payment Channels</h3>
+            <span class="badge badge-cyan">Channels</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-methods"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Status Distribution -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-ring"></i> Execution Status Ratio</h3>
+            <span class="badge badge-success">Health</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-status"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 5: City Distribution -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-city"></i> Geographical Activity (Top Cities)</h3>
+            <span class="badge badge-indigo">Geo Reach</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-cities"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 6: Deposits vs Withdrawals vs Transfers -->
+        <div class="chart-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-scale-balanced"></i> Liquidity Flow Analysis</h3>
+            <span class="badge badge-emerald">Capital Flow</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-liquidity"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 7: Top Active Customers -->
+        <div class="chart-card card-wide">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-trophy"></i> Top 10 Customers by Transaction Velocity</h3>
+            <span class="badge badge-amber">Account Activity</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chart-customers"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: HBASE TABLE EXPLORER & SEARCH -->
+    <section id="explorer-view" class="tab-content">
+      <!-- Search & Filter Bar -->
+      <div class="filter-panel">
+        <div class="filter-group">
+          <label><i class="fa-solid fa-magnifying-glass"></i> Search Filter</label>
+          <input type="text" id="search-input" placeholder="Search by Customer ID (e.g. CUST1001) or TXN ID..." onkeyup="handleSearchKey(event)">
+        </div>
+
+        <div class="filter-group">
+          <label><i class="fa-solid fa-filter"></i> Transaction Status</label>
+          <select id="filter-status" onchange="loadHBaseTransactions()">
+            <option value="">All Statuses</option>
+            <option value="SUCCESS">SUCCESS</option>
+            <option value="FAILED">FAILED</option>
+            <option value="PENDING">PENDING</option>
+            <option value="REVERSED">REVERSED</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label><i class="fa-solid fa-tag"></i> Transaction Type</label>
+          <select id="filter-type" onchange="loadHBaseTransactions()">
+            <option value="">All Types</option>
+            <option value="Deposit">Deposit</option>
+            <option value="Withdrawal">Withdrawal</option>
+            <option value="Transfer">Transfer</option>
+            <option value="Payment">Payment</option>
+            <option value="ATM">ATM</option>
+            <option value="UPI">UPI</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-primary" onclick="loadHBaseTransactions()">
+            <i class="fa-solid fa-arrows-rotate"></i> Query HBase
+          </button>
+          <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Live HBase Table -->
+      <div class="table-container">
+        <div class="table-header-info">
+          <h3>HBase Live Table: <code>bank_transactions</code></h3>
+          <span class="badge badge-info" id="table-record-count">Showing 50 records</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="transactions-table">
+            <thead>
+              <tr>
+                <th>Row Key (HBase Primary Key)</th>
+                <th>TXN ID</th>
+                <th>Customer</th>
+                <th>Type</th>
+                <th>Amount (₹)</th>
+                <th>Balance After (₹)</th>
+                <th>Method</th>
+                <th>City / Branch</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="11" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records from HBase container...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: SUSPICIOUS TRANSACTION RADAR -->
+    <section id="fraud-view" class="tab-content">
+      <div class="radar-header-banner">
+        <div class="banner-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="banner-text">
+          <h3>Rule-Based Suspicious Activity & Anomaly Radar</h3>
+          <p>Academic demonstration module identifying potential anti-money laundering (AML) anomalies, high-velocity bursts, and repeated failure patterns from HBase storage.</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header-info">
+          <h3>Flagged Suspicious Transactions</h3>
+          <span class="badge badge-crimson" id="suspicious-count-badge">Loading...</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>TXN ID</th>
+                <th>Customer Name</th>
+                <th>Account</th>
+                <th>Amount (₹)</th>
+                <th>Type</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Risk Score</th>
+                <th>Heuristic Flags Triggered</th>
+              </tr>
+            </thead>
+            <tbody id="suspicious-table-body">
+              <tr>
+                <td colspan="9" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading suspicious transaction analysis...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HBASE ARCHITECTURE & SCHEMA -->
+    <section id="architecture-view" class="tab-content">
+      <div class="arch-grid">
+        <!-- Card 1: Row Key Anatomy -->
+        <div class="arch-card">
+          <div class="arch-header">
+            <i class="fa-solid fa-key"></i>
+            <h3>HBase Row Key Anatomy</h3>
+          </div>
+          <div class="arch-body">
+            <div class="rowkey-visual">
+              <span class="rk-part rk-cust">customer_id</span>
+              <span class="rk-sep">#</span>
+              <span class="rk-part rk-date">transaction_date</span>
+              <span class="rk-sep">#</span>
+              <span class="rk-part rk-id">transaction_id</span>
+            </div>
+            <p class="rk-example">Example: <code>CUST1001#2025-01-10#TXN10005782</code></p>
+            <ul class="arch-bullets">
+              <li><strong>Clustering:</strong> Clustered on disk by customer ID for high cache locality.</li>
+              <li><strong>Time Ordering:</strong> Lexicographical sorting provides chronological order.</li>
+              <li><strong>Range Scans:</strong> Enables fast historical range queries (e.g. all transactions of March 2025).</li>
+              <li><strong>Hotspot Prevention:</strong> Distributes writes across RegionServers instead of single-timestamp contention.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 2: Column Families Layout -->
+        <div class="arch-card">
+          <div class="arch-header">
+            <i class="fa-solid fa-sitemap"></i>
+            <h3>Table Column Families</h3>
+          </div>
+          <div class="arch-body">
+            <div class="cf-item">
+              <span class="cf-badge">customer:</span>
+              <span>customer_id, customer_name, account_type</span>
+            </div>
+            <div class="cf-item">
+              <span class="cf-badge">transaction:</span>
+              <span>transaction_id, transaction_type, amount, transaction_date, transaction_time, transaction_status, description</span>
+            </div>
+            <div class="cf-item">
+              <span class="cf-badge">account:</span>
+              <span>account_id, balance_after_transaction, sender_account, receiver_account</span>
+            </div>
+            <div class="cf-item">
+              <span class="cf-badge">location:</span>
+              <span>branch, city</span>
+            </div>
+            <div class="cf-item">
+              <span class="cf-badge">payment:</span>
+              <span>payment_method</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Docker Deployment Overview -->
+        <div class="arch-card card-full">
+          <div class="arch-header">
+            <i class="fa-brands fa-docker"></i>
+            <h3>Container Topology (100% Docker-Based)</h3>
+          </div>
+          <div class="arch-body">
+            <div class="docker-nodes">
+              <div class="node-box">
+                <i class="fa-solid fa-crown"></i>
+                <h4>HMaster</h4>
+                <p>Port 16000 / Web 16010</p>
+                <span>DDL, Region Balancing</span>
+              </div>
+              <div class="node-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="node-box">
+                <i class="fa-solid fa-server"></i>
+                <h4>HRegionServer</h4>
+                <p>Port 16020 / Web 16030</p>
+                <span>StoreFiles, MemStore, WAL</span>
+              </div>
+              <div class="node-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="node-box">
+                <i class="fa-solid fa-network-wired"></i>
+                <h4>ZooKeeper</h4>
+                <p>Port 2181</p>
+                <span>Coordination & Master Election</span>
+              </div>
+              <div class="node-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="node-box node-gateway">
+                <i class="fa-solid fa-globe"></i>
+                <h4>REST Gateway (Stargate)</h4>
+                <p>Port 8080 / Web 8085</p>
+                <span>HTTP JSON API Gateway</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: INSERT TRANSACTION (CRUD: CREATE) -->
+  <div id="modal-create-txn" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-invoice-dollar"></i> Insert New Banking Transaction into HBase</h3>
+        <button class="close-btn" onclick="closeModal('modal-create-txn')">&times;</button>
+      </div>
+      <form id="form-create-txn" onsubmit="submitNewTransaction(event)">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Customer ID</label>
+            <input type="text" id="new-cust-id" value="CUST1001" required>
+          </div>
+          <div class="form-field">
+            <label>Customer Name</label>
+            <input type="text" id="new-cust-name" value="Priya Patel" required>
+          </div>
+          <div class="form-field">
+            <label>Account Type</label>
+            <select id="new-acc-type">
+              <option value="Savings">Savings</option>
+              <option value="Current">Current</option>
+              <option value="Salary">Salary</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Transaction Type</label>
+            <select id="new-txn-type">
+              <option value="Deposit">Deposit</option>
+              <option value="Withdrawal">Withdrawal</option>
+              <option value="Transfer">Transfer</option>
+              <option value="Payment">Payment</option>
+              <option value="UPI">UPI</option>
+              <option value="ATM">ATM</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Amount (₹)</label>
+            <input type="number" id="new-amount" step="0.01" value="25000.00" required>
+          </div>
+          <div class="form-field">
+            <label>Payment Method</label>
+            <select id="new-payment-method">
+              <option value="UPI">UPI</option>
+              <option value="NEFT">NEFT</option>
+              <option value="IMPS">IMPS</option>
+              <option value="RTGS">RTGS</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Branch</label>
+            <input type="text" id="new-branch" value="Bandra Kurla Complex">
+          </div>
+          <div class="form-field">
+            <label>City</label>
+            <input type="text" id="new-city" value="Mumbai">
+          </div>
+          <div class="form-field form-full">
+            <label>Description / Narration</label>
+            <input type="text" id="new-desc" value="Real-time transaction executed via Web Dashboard">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create-txn')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-txn">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Put into HBase
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Script logic -->
+  <script src="script.js"></script>
+</body>
+</html>

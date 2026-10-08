@@ -1,0 +1,60 @@
+# ==============================================================================
+# Bank Transaction System Using Apache HBase with Docker
+# Script: insert_data.hbase
+# Description: Demonstrates manual PUT operations for inserting banking records
+#              into 'bank_transactions' and 'customer_accounts'.
+# ==============================================================================
+
+# 1. Insert into bank_transactions
+# Row Key: customer_id#transaction_date#transaction_id
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'customer:customer_id', 'CUST1001'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'customer:customer_name', 'Priya Patel'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'customer:account_type', 'Current'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:transaction_id', 'TXN10000001'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:transaction_type', 'Deposit'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:amount', '150000.00'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:transaction_date', '2025-01-10'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:transaction_time', '10:30:15'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:transaction_status', 'SUCCESS'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'transaction:description', 'Client invoice settlement'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'account:account_id', 'ACC90001001'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'account:balance_after_transaction', '650000.00'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'account:sender_account', 'EXT99991234'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'account:receiver_account', 'ACC90001001'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'location:branch', 'Bandra Kurla Complex'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'location:city', 'Mumbai'
+put 'bank_transactions', 'CUST1001#2025-01-10#TXN10000001', 'payment:payment_method', 'NEFT'
+
+# 2. Insert second transaction for same customer on later date
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'customer:customer_id', 'CUST1001'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'customer:customer_name', 'Priya Patel'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'customer:account_type', 'Current'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:transaction_id', 'TXN10000002'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:transaction_type', 'Transfer'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:amount', '45000.00'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:transaction_date', '2025-01-15'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:transaction_time', '14:22:10'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:transaction_status', 'SUCCESS'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'transaction:description', 'Vendor payment'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'account:account_id', 'ACC90001001'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'account:balance_after_transaction', '605000.00'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'account:sender_account', 'ACC90001001'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'account:receiver_account', 'ACC90001005'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'location:branch', 'Bandra Kurla Complex'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'location:city', 'Mumbai'
+put 'bank_transactions', 'CUST1001#2025-01-15#TXN10000002', 'payment:payment_method', 'IMPS'
+
+# 3. Insert into customer_accounts
+put 'customer_accounts', 'CUST1001#ACC90001001', 'personal:customer_name', 'Priya Patel'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'personal:account_type', 'Current'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'location:branch', 'Bandra Kurla Complex'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'location:city', 'Mumbai'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'balance:current_balance', '605000.00'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'balance:last_transaction_date', '2025-01-15'
+put 'customer_accounts', 'CUST1001#ACC90001001', 'balance:status', 'ACTIVE'
+
+# 4. Insert into transaction_summary
+put 'transaction_summary', 'DAILY#2025-01-10', 'stats:total_transactions', '1'
+put 'transaction_summary', 'DAILY#2025-01-10', 'stats:total_volume', '150000.00'
+put 'transaction_summary', 'DAILY#2025-01-10', 'stats:success_count', '1'
+put 'transaction_summary', 'DAILY#2025-01-10', 'stats:failed_count', '0'

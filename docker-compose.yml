@@ -1,0 +1,80 @@
+# ==============================================================================
+# Bank Transaction System Using Apache HBase with Docker
+# File: docker-compose.yml
+# 
+# Architecture:
+# - Self-contained Pseudo-Distributed Apache HBase 2.x
+# - Integrated Apache ZooKeeper 3.5.x
+# - Embedded HBase Master (HMaster) & RegionServer (HRegionServer)
+# - Embedded Stargate REST API Server (Port 8080) for Python/Web connectivity
+# - Embedded Thrift Server (Port 9090) for HappyBase / RPC connectivity
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Apache HBase Service (Master + RegionServer + ZooKeeper + REST + Thrift)
+  # ============================================================================
+  hbase-master:
+    image: harisekhon/hbase:latest
+    container_name: hbase-master
+    hostname: hbase-master
+    restart: unless-stopped
+    ports:
+      # ZooKeeper Client Port
+      - "2181:2181"
+      # HBase REST API (Stargate) - Used by Python Backend & Client APIs
+      - "8080:8080"
+      # HBase REST Web UI
+      - "8085:8085"
+      # HBase Thrift API - Used by Python HappyBase clients
+      - "9090:9090"
+      # HBase Thrift Web UI
+      - "9095:9095"
+      # HBase Master RPC Port
+      - "16000:16000"
+      # HBase Master Web UI (Status, Region Server info, Tables catalog)
+      - "16010:16010"
+      # HBase RegionServer RPC Port
+      - "16020:16020"
+      # HBase RegionServer Web UI
+      - "16030:16030"
+      # Embedded RegionServer Port
+      - "16201:16201"
+
+    environment:
+      - HBASE_MANAGES_ZK=true
+      - HBASE_HEAPSIZE=2048
+
+    volumes:
+      # Persistent storage for HBase tables, HFiles, and write-ahead logs (WAL)
+      - hbase_data:/hbase-data
+      # Persistent storage for ZooKeeper coordination metadata
+      - zookeeper_data:/zookeeper
+      # Read-only bind mount for HBase Shell scripts
+      - ./hbase:/opt/hbase_scripts:ro
+      # Read-only bind mount for banking transaction datasets
+      - ./data:/opt/data:ro
+
+    networks:
+      - bank-network
+
+# ==============================================================================
+# Persistent Named Volumes
+# ==============================================================================
+volumes:
+  hbase_data:
+    name: bank_hbase_data
+    driver: local
+  zookeeper_data:
+    name: bank_zookeeper_data
+    driver: local
+
+# ==============================================================================
+# Docker Bridge Network
+# ==============================================================================
+networks:
+  bank-network:
+    name: bank-hbase-network
+    driver: bridge
